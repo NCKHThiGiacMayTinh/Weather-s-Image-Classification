@@ -3,7 +3,7 @@ A deep learning model for classifying weather conditions from images using Convo
 This project demonstrates data preprocessing, CNN architecture design, model training, and evaluation using PyTorch.
 ## Installation
 Clone the repository:
-git clone https://github.com/username/project-name.git
+git clone [https://github.com/username/project-name.git](https://github.com/NCKHThiGiacMayTinh/Weather-s-Image-Classification.git)
 ## Usage
 To train the model:  
 python trainer.py  
