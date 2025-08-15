@@ -16,15 +16,12 @@ CHECKPOINT_FILE = "weather_best.pth.tar"
 RESUME_TRAINING = True
 
 def main():
-    # 1. Thiết bị
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     print(f"Sử dụng thiết bị: {device}")
 
-    # 2. Tải dữ liệu
     dataloaders, class_names = create_dataloaders(DATA_DIR, BATCH_SIZE)
     num_classes = len(class_names)
 
-    # 3. Khởi tạo mô hình, hàm mất mát và optimizer
     model = SimpleCNN(num_classes=num_classes).to(device)
     criterion = nn.CrossEntropyLoss()
     optimizer = optim.Adam(model.parameters(), lr=LEARNING_RATE)
@@ -33,18 +30,14 @@ def main():
     best_val_loss = float('inf')
 
     if RESUME_TRAINING and os.path.exists(CHECKPOINT_FILE):
-        # Hàm load_checkpoint sẽ cập nhật model và optimizer trực tiếp
         completed_epoch = load_checkpoint(CHECKPOINT_FILE, model, optimizer)
         start_epoch = completed_epoch 
         
         print(f"Resume training từ epoch {start_epoch + 1}")
 
-
-    # 4. Vòng lặp huấn luyện
     for epoch in range(start_epoch, NUM_EPOCHS):
         print(f"\n--- Epoch {epoch+1}/{NUM_EPOCHS} ---")
         
-        # --- Giai đoạn Huấn luyện ---
         model.train()
         train_loss = 0.0
         train_corrects = 0
@@ -68,7 +61,6 @@ def main():
         epoch_train_acc = train_corrects.double() / len(dataloaders['train'].dataset)
         print(f"Train Loss: {epoch_train_loss:.4f} Acc: {epoch_train_acc:.4f}")
 
-        # --- Giai đoạn Đánh giá (Validation) ---
         model.eval()
         val_loss = 0.0
         val_corrects = 0
@@ -86,8 +78,6 @@ def main():
         epoch_val_loss = val_loss / len(dataloaders['val'].dataset)
         epoch_val_acc = val_corrects.double() / len(dataloaders['val'].dataset)
         print(f"Validation Loss: {epoch_val_loss:.4f} Acc: {epoch_val_acc:.4f}")
-
-        # 5. Lưu lại model tốt nhất dựa trên validation loss
         if epoch_val_loss < best_val_loss:
             print(f"Validation loss giảm ({best_val_loss:.4f} --> {epoch_val_loss:.4f}). Đang lưu model...")
             best_val_loss = epoch_val_loss

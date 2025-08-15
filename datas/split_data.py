@@ -13,40 +13,31 @@ VAL_RATIO = 0.15
 TEST_RATIO = 0.15
 RANDOM_STATE = 42
 
-# --- Xóa thư mục đích nếu đã tồn tại để làm mới ---
 if os.path.exists(DEST_DIR):
     print(f"Thư mục '{DEST_DIR}' đã tồn tại. Xóa để tạo lại...")
     shutil.rmtree(DEST_DIR)
 
-# --- Tạo các thư mục train/val/test ---
 os.makedirs(os.path.join(DEST_DIR, 'train'), exist_ok=True)
 os.makedirs(os.path.join(DEST_DIR, 'val'), exist_ok=True)
 os.makedirs(os.path.join(DEST_DIR, 'test'), exist_ok=True)
 
-# --- Lặp qua từng lớp (thư mục thời tiết) ---
 weather_classes = [d for d in os.listdir(SOURCE_DIR) if os.path.isdir(os.path.join(SOURCE_DIR, d))]
 
 for wc_class in weather_classes:
     class_path = os.path.join(SOURCE_DIR, wc_class)
     
-    # Tạo thư mục con cho lớp trong train/val/test
     os.makedirs(os.path.join(DEST_DIR, 'train', wc_class), exist_ok=True)
     os.makedirs(os.path.join(DEST_DIR, 'val', wc_class), exist_ok=True)
     os.makedirs(os.path.join(DEST_DIR, 'test', wc_class), exist_ok=True)
     
-    # Lấy danh sách tất cả các ảnh trong thư mục lớp hiện tại
-    # Sử dụng glob để xử lý các định dạng ảnh khác nhau (.jpg, .png, etc.)
     all_files = glob.glob(os.path.join(class_path, '*.*'))
     
-    # Chia lần 1: tách tập train ra khỏi phần còn lại (val + test)
     train_files, val_test_files = train_test_split(
         all_files, 
         test_size=(1 - TRAIN_RATIO), 
         random_state=RANDOM_STATE
     )
-    
-    # Chia lần 2: chia phần còn lại thành val và test
-    # Tỉ lệ test so với phần còn lại = TEST_RATIO / (VAL_RATIO + TEST_RATIO)
+
     relative_test_ratio = TEST_RATIO / (VAL_RATIO + TEST_RATIO)
     val_files, test_files = train_test_split(
         val_test_files, 
@@ -56,7 +47,6 @@ for wc_class in weather_classes:
     
     print(f"Lớp '{wc_class}': {len(train_files)} train, {len(val_files)} val, {len(test_files)} test")
 
-    # --- Copy file vào các thư mục tương ứng ---
     def copy_files(files, split_name):
         for f in files:
             shutil.copy(f, os.path.join(DEST_DIR, split_name, wc_class, os.path.basename(f)))
