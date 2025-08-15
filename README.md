@@ -1,13 +1,6 @@
 # Weather’s Image Classification using CNN
 A deep learning model for classifying weather conditions from images using Convolutional Neural Networks (CNN). 
 This project demonstrates data preprocessing, CNN architecture design, model training, and evaluation using PyTorch.
-## Table of Contents
-- Installation
-- Dataset
-- Usage
-- Results
-- Contributing
-- License
 ## Installation
 Clone the repository:
 ```bash
