@@ -5,8 +5,8 @@ This project demonstrates data preprocessing, CNN architecture design, model tra
 Clone the repository:
 git clone https://github.com/username/project-name.git
 ## Usage
-To train the model:
-python trainer.py
-To evaluate model:
-python evaluate.py
+To train the model:  
+python trainer.py  
+To evaluate model:  
+python evaluate.py  
 
